@@ -1,0 +1,643 @@
+﻿1.OS:DOS,WINDOWS,LINUX,UNIX,MAC
+2.WINDOWS和linux都有两种界面：GUI(图形界面）和CLI(命令界面）
+LINUX界面切换：
+GUI模式到cli模式的切换：ctrl+alt+f5
+CLI到GUI模式的切换：ctrl+alt+f7
+3.OS是通过文件系统来管理所有文件的，WINDOWS用的是ntfs,LINUX用的是ext3,最新版为ext4(比ext3多了日志功能），没有文件系统的操作系统称为raw机（祼机）
+4.对于LINUX而言一切皆文件，最高级为/
+ctrl+alt+回车，在全屏和小屏间切换
+重点：
+1.常用的shell:bash,csh,ksh
+2.LINUX在工作中的作用：一般用来做服务器，搭建测试环境，查看日志
+3.LINUX的启动目录：boot
+4.who -r:查看当前的运行级别 init 3:切换运行级别到3级，init 5 ：切换运行级别到5级（只有管理员才有权限使用）（了解）
+5.pwd:显示当前路径，刚进去，不切换目录其显示为当前家目录
+6.#代表管理员用户，$代表普通用户
+
+
+
+一.查看文件大小的命令：
+
+ls:显示当前路径下的所有文件
+ls -l:显示文件的详细信息
+-rw------- 1 root root   885 Mar 25 08:54 anaconda-ks.cfg
+第一位代表文件类型
+第2-4位代表文件所有者权限（r 读，w写,x执行，-没有权限）
+第5-7位代表所属组的权限（r 读，w写,x执行，-没有权限）
+第8-10代表其它用户的权限（r 读，w写,x执行，-没有权限）
+1代表级联的文件数
+第一个root代表文件所有者
+第二个root代表所属组
+885代表文件包含的字节数
+Mar 25 08:54：文件创建的时间和日期
+anaconda-ks.cfg（文件名）
+
+ls -lh:人性化显示文件的详细信息（文件大小带有单位）
+ls -alh:显示包含隐藏文件在内的详细信息
+ls -lh 文件名：显示指定文件的详细信息
+
+du -h 显示所有文件占用磁盘空间的大小
+du -h 文件名：显示指定文件占用磁盘的大小
+
+stat 文件名 显示文件的详细信息,其包含三个时间，atime(存取时间）,ctime（状态时间）,mtime（修改时间）(面试题）
+eg:atime access time最后一次访问文件的时间
+更改了权限与属性ctime就会改变  change time
+修改文件内容mtime就会改变
+
+file 文件名：查看文件类型（了解）
+
+---).常见linux的文件类型:
+- 常规文件
+d 目录文件
+l 符号链接文件
+p fifo文件
+b 块设备文件
+c 字符设备文件
+s socket文件
+
+
+二.新建文件或目录
+1.新建文件：
+touch 【路径】文件名 ：新建一个空文件
+命令 > 文件名：将命令执行后的内容放到指定文件中，若文件不存在则新建该文件，若文件已经存在则覆盖原内容
+eg:echo "abcd" >ab:将abcd放入文件ab中   
+echo linux专用的输出命令
+
+命令 >>文件名：将命令执行的结果追加到指定文件中，若文件不存在则新建该文件，若文件已经存在则在原内容后追加新的内容
+eg:echo "hello" >>ab:将hello追加到ab文件中
+
+命令 2>文件名：将执行的错误信息放到指定的文件中，若文件不存在则新建该文件，若文件已经存在则覆盖原内容
+命令 2>>文件名：将执行的错误信息追加到指定的文件中，若文件不存在则新建该文件，若文件已经存在则在原内容后追加新的内容
+
+2.新建目录
+
+mkdir 【路径】目录名：在指定路径下新建目录（默认为当前目录）
+mkdir -p 【路径】/目录1/目录2.。。。：创建多级目录
+
+三.文件的删除
+
+1.删除空目录
+rmdir 目录名（了解）
+2.删除文件
+rm 文件名：删除文件（删除会给予提示）
+rm -f 文件名： 删除时不予提示
+rm -rf 文件/目录：即可以删除文件又可以删除目录（此命令慎用，一旦删除将无法恢复）
+r代表删除目录
+f代表删除时不予提示
+
+
+四.清屏命令：（常规操作）
+1.clear :将内容翻页
+2.printf "\033c":将内容彻底清除（此命令只有在服务器端才可以使用）
+3.ctrl +l（字母）:同clear
+
+五.查看历史记录（常规操作）
+1.history显示所有使用过的命令
+2.上下箭头：向下或向上翻看使用过的命令
+3.ctrl+r:在使用过的命令中模糊查询命令（比较少用）
+4.history n:显示最近使用过的n条件命令
+
+六.清除历史记录（常规操作）
+history -c:清除所有使用过的命令
+
+四.文件的改
+1.改变目录
+cd 目录名：切换目录到指定目录
+cd ..：回到上一级目录
+cd .:在当前目录不变
+cd -:回到上一次进入的目录
+cd ~/cd 回车：回到家目录
+cd /:回到根目录
+
+2.改变文件位置
+
+1）复制文件（原文件还在）
+cp 【路径】源文件 【路径】目的目录/【文件名】 文件名不写时代表不重命名，写时代表要命名
+2）复制目录
+cp -rf 【路径】源目录 【路径】目的目录/【目录名】
+eg:cp  dir3 Desktop/   将当前路径下的dir3目录复制到Desktop下
+
+同一路径下的复制必须重命名
+
+3)移动：
+mv 【路径】源文件 目的地（注：同一路径下的移动相当于重命名）
+eg:mv dir3 Desktop/将dir3移动到桌面（原文件不在原来的位置）
+
+4）所有者：u(user),所属组 g(group),其它人:o(other) 所有人：a（all)
+r 读（4），w写（2）,x执行（1）
+权限可以+,-,=,（+）用户增加权限，（-）代表用户去掉某个权限，（=）代表用户就是某些权限
+eg:chmod a+x 文件名：所该文件的所有人增加执行的权限
+chmod g-x 文件名：对指定文件所属组去掉执行的权限
+chmod a=rwx 文件名：改变所有人的权限为读写执行
+
+chmod 777 文件名：将指定文件的所有人的权限都改为可读可写可执行
+5）改变文件夹的权限
+chmod 777 目录名 -R：改变目录及该目录以下所有文件的权限为可读可写可执行   -R代表级联改变，不加-R时，仅改变指定目录的权限
+
+6）改变文件的属主和属组(了解）   只能管理员用户改普通用户，不能普通用户改成管理员用户
+cat /etc/passwd:查看所有用户，从500开始代表普通用户的开始
+cat /etc/shadow:查看用户有没有加密
+chown 普通用户名 文件名：改变指定文件的属主
+chown ：普通用户名 文件名:改变指定文件的属组
+chown 普通用户名：普通用户名 文件名     改变指定文件的属主及属组
+eg:   chown sss:sss a  改变a文件的属主及属组
+
+7）chown 普通用户名：普通用户名 目录名 -R：改变指定目录及该目录下所有目录及子目录的属主及属组
+
+五.查看ip地址
+ifconfig 查看ip地址
+ifconfig 网卡名称 up/down网卡的开启或关闭
+ifconfig eth0 ip地址：临时改变ip地址
+service network restart :重启网络服务
+
+永久改变ip地址步骤：
+1.网络分为两种，一种为静态ip地址，一种是动态ip地址
+1）静态ip地址的设置方法
+先在右下角小电脑上右击----设置---桥接模式---确定
+在命令窗口输入setup----network configration---两次回车----取消use DHCP(按空格键）
+在static ip中输入和物理机在同一网段的ip地址----保存退出即可
+重启网络服务：service network restart，再次查看ip地址
+2）动态ip地址的设置方法
+先在右下角小电脑上右击----设置---NAT模式---确定
+在命令窗口输入setup----network configration---两次回车---选中use DHCP(按空格键）---保存退出即可
+重启网络服务：service network restart，再次查看ip地址
+
+六：查看文件内容（日志也是文件）
+1.cat 文件名：正向显示文件内容
+2.tac 文件名：逆向显示文件内容
+3.more 文件名：翻页查询文件内容（回车，一行行向下翻，空格或字母f一页页向下翻，字母b一页页向上翻，字母q退出分页查询）
+4.less 文件名：用法同more
+5.head 文件名：显示指定文件的前十行
+ head -n m 文件名：显示指定文件的前m行
+6.tail 文件名：显示指定文件的最新十行
+tail -n m 文件名：显示指定文件的最新m行
+tail -f -n m 文件名：永远显示最新的m行的内容（必须通过ctrl+c,退出命令）
+
+7.sed -n 'mp' 文件名：显示第m行的内容  -n的作用是指定行数
+sed -n 'u,ip' 文件名：显示第u行到第i行的内容
+sed -n -e 'mp' -e 'op' -e 'tp' -e... 文件名:显示文件的第m,o,8t行的内容
+sed -n '/2020-08-14 15:00 2020-08-14 16:00/p' a1：显示指定时间段的日志内容
+
+8.grep '关键字' 文件名：显示包含关键字的文件内容
+grep '^关键字' 文件名：显示示以关键字开头的文件内容
+grep '关键字$' 文件名：显示示以关键字结尾的文件内容
+--color 将关键字高亮显示
+-n ：显示包含关键字的行号
+-c:统计关键了出现的次数
+
+9：查看文件的某一列内容
+
+awk '{print $n列号}' 文件名：显示第n列的内容  列与列之间是用空格隔开的
+
+？代表1个字符
+*代表0到多个字符
+|将左边的输出作为右边的输入
+
+七：vi编辑器
+vi 分为三种模式：编辑模式，命令模式，底行模式
+
+三种模式的转换：进入vi后，按字母i进入编辑模式，在编辑模式按esc键进入命令模式，在命令模式输入冒号进入底行模式
+
+1.底行模式常用的命令：
+q!:强制退出
+wq!:保存并强制退出
+wq 保存退出等价于x
+w:保存不退出
+q:退出
+？或者/关键字：在vi中搜索关键字(n向上搜索，N向下搜索）
+set nu :显示行号
+set nonu:不显示行号
+行号 回车：跳到指定行
+2.命令模式常用的命令
+
+yy 复制光标所在行
+p 粘贴复制的内容
+dd 删除光标所在行
+nyy n可以是任意数字从光标所在处开始向下复制n行
+np 对复制的内容粘贴n次
+ndd 从光标所在处向下删除n行
+u 撤销上一次的操作
+ctrl+r 恢复撤消的操作
+G 回到文件的结尾
+gg 回到文件的开头
+ngg等价于nG 光标定位到文件第n行
+shift +6:回到光标所在行的开头
+shift+4：回到光标所在行的结尾
+X：删除光标左边的字符
+x：删除光标右边的字符
+o:在光标所在行的下面插入一行
+O:在光标所在行的上面插入一行
+a:在光标的下一位插入
+A：在光标所在处的行尾插入
+r:按一下r，再按要替换的字母即可替换光标所在处字符
+R：进入替换模式，可一直替换光标所在行的以下内容，按esc键退出替换模式
+
+
+八：查看文件的某一列内容
+
+awk '{print $n列号}' 文件名：显示第n列的内容  列与列之间是用空格隔开的
+
+九：显示文件的不同之处
+diff 文件1 文件2 ：显示两者的不同之处
+十文件的压缩：
+1.通过zip压缩（只能对文件进行压缩，多个文件间用空格隔开，压缩后，原文件还在）
+
+命令格式：
+
+zip 包名.zip 要压缩的文件1 要压缩的文件2.。。。
+
+解压：unzip 包名.zip 解压后缀名为.zip的压缩文件
+2.gzip(只能对文件进行压缩，多个文件间用空格隔开,压缩完后，原文件被压缩包替换，扩展名为.gz)
+
+gzip -v *:压缩所有文件
+
+-v显示压缩率
+
+gzip -dv * :解压所有.gz的文件
+-d:在解压
+压缩级别有（1-9级）
+gzip 文件名：对指定文件进行压缩，压缩级别默认为6级
+gzip -1 文件名：对指定文件进行压缩（1为fast，压缩速度快，但压缩率低）
+gzip -9 文件名：对指定文件进行压缩（9为best,压缩速度慢，但压缩率高）
+
+gzip -d 包名.gz 解压指定的包名
+
+
+gzip 文件1，文件2.。它可对多个文件一起压缩，但每个文件都会生成一个包名
+3.打包文件（了解）
+tar -cvf 包名.tar 要打包的文件（文件可以是任意类型） -c打包文件  -v显示打包过程 f后必跟包名
+eg:tar -cvf aa.tar a1 aaa.gz bao1.zip f1
+
+tar -tvf 包名.tar 查看包中内容
+eg:tar -tvf aa.tar
+
+tar -rvf 包名.tar 文件名 向包中追加指定文件
+eg:tar -rvf aa.tar lr.txt   将文件lr.txt追加到aa.tar中
+
+tar -xvf 包名.tar 解包到当前路径下
+eg:tar -xvf aa.tar  解包aa.tar下的文件到当前路径
+
+tar -xvf 包名.tar -C 目的地：改变解包路径
+eg:tar -xvf aa.tar -C Desktop/  解包aa.tar下的文件到Desktop下
+
+4.打包压缩包
+tar -zcvf 包名.tar.gz 要打包压缩文件，多个文件时，文件之间用空格隔开，打包压缩后，原文件还在
+z：以gzip的格式打包压缩包
+c：打包
+v：显示打包过程
+f：参数位置固定，后必接包名
+x:解压.tar.gz的包
+eg:tar -zcvf bao4.tar.gz a1 b.zip aaa.gz aa.tar
+
+tar -zxvf 包名.tar.gz
+eg:tar -zxvf bao4.tar.gz
+
+tar -jcvf 包名.tar.bz2 要打包压缩的文件
+-j:代表以bzip的格式打包压缩包
+tar -jxvf 包名.tar.bz2  解包.tar.bz2的压缩包
+
+十一：查找文件
+find 【路径】 -name 要查找的文件
+路径不写时，默认为当前路径
+
+eg: find /usr -name 'local' :查找/usr下的local文件，其也可以实现模糊查询
+*代表0到多个字符
+？代表1个字符
+whereis 文件名（了解）
+十二：统计文件字节数，行数，单词数（了解）
+wc -l 文件名：显示文件中行数
+wc -w 文件名：统计文件中单词数
+wc -c 文件名：显示文件中字节数
+十三：对用户的操作（只有超管才可以使用）
+1.增加用户
+
+useradd 用户名：延用原家目录下新建用户
+useradd -d /家目录名 用户名  在指定的家目录名下新建用户
+
+2.给用户增加密码
+
+passwd 用户名：给指定用户加密
+3.切换用户
+从root切换到普通用户（不需要输入密码）
+su 用户名 切换到普通用户
+需要通过cd ~切换到普通用户的家目录
+
+su - 用户名 直接切换到指定用户的家目录
+普通用户之间切换需要输入密码
+切换到上次访问过的用户可直接使用exit退出当前用户
+
+普通用户到root，要输入密码
+su -:直接切换到root的家目录
+
+4.删除用户
+userdel -rf 用户名：删除用户的同时，删除其家目录（但系统自带家目录除外）
+十四：查看linux资源
+
+1.查看磁盘的使用情况
+df -h:查看磁盘的使用情况
+sda1:
+s代表scsi并行接口 ，d disk 磁盘 a代表第一块硬盘，第二块用b来表示。。依次类推 1代表分区编号：第一个分区
+fdisk -l:显示磁盘的详细信息(root专用)
+2.查看内存
+free 查看内存的使用情况
+cat /proc/meminfo:显示内存的详细信息
+3.查看cpu的详细信息
+cat /proc/cpuinfo
+4.查看进程
+ps -ef 显示刚刚运行过的所有进程的详细信息（静态）
+ps aux 显示每个进程的占用内存，cpu，虚拟内存，物理内存的大小
+ps -ef |grep 关键字 显示包含关键字的进程编号
+5.结束进程
+kill -9 pid  结束指定的进程
+eg:kill -9 16047
+
+6.显示正在运行的进程
+top (动态显示正在运行中的进程，内存及cpu使用情况等，可用热键加以管理，如d可改变延迟时间，q退出等）
+top -b作用同上，不提供互式界面，无法用热键加以管理（必须通过ctrl+c退出top)
+
+
+7.查看端口号
+<<<<<-an 统计机器中网络连接各个状态个数
+-p 说明：netstat -p 可以与其它开关一起使用，就可以添加 “PID/进程名称”>>>>>
+netstat -anp 显示所有端口号
+netstat -anp|grep 关键字（当前键字为端口号时，代表查看指定端口号有没有被占用，若为程序名称时，代表要查看某个程序的端口号）
+端口号必须唯一，不能重复
+
+8.查看虚拟内存(不常用，了解)
+vmstat 仅显示一次进程，内存，交换内存，io系统，系统的使用情况
+vmstat 1 每隔1秒显示一次，一直更新下去，直到ctrl+c强制结束
+vmstat 每次更新时间 总显示次数  每隔指定时间更新一次，总共显示多少次
+
+十五：显示登录过的用户（了解）
+who are you:显示当前登录用户及其tty（虚拟终端）及登录时间，一个客户端都是一个虚拟终端
+who 显示登录的所有用户及其虚拟终端及登录时间
+w 显示总共登录的时间及登录用户，最后1，5，15分钟的平均负载及who下的内容
+who -r :显示运行级别
+
+uptime显示内容为w和top的第一行内容
+
+
+十六：查看服务
+chkconfig --list :显示系统的所有服务
+chkconfig 服务名称 on:服务的开启
+chkconfig 服务名称 off :服务的关闭
+chkconfig --add 服务名称：添加服务
+chkconfig --del 服务名称：删除服务
+查看服务状态：          
+chkconfig --list |grep 服务名称
+
+eg:chkconfig --list |grep sshd
+
+十七：查看后台任务列表
+jobs 查看后台任务列表
+sleep 1000 让系统休眠1000秒
+ctrl+z将任务停止并放入后台
+ctrl+c终止任务的执行
+bg 任务列表的序号  将指定任务放到后台运行
+fg 任务列表的序号 将指定任务放到前台运行
+sleep 10000 & 将任务直接放至后台运行
+
+十八：查看系统日期
+date 查看系统日期
+date 月月日日时时分分年年年年  修改系统日期
+hwclock 查看硬件时钟时间
+hwclock -s :将系统时间改变成硬件时间
+hwclock -w:将硬件时间改为系统时间
+
+cal显示当前月份日历（了解）
+cal 年份 显示指定年份的日历
+
+十九：文件的挂载（了解）只有目录才可以挂载
+mount  查看当前挂载情况
+通过df -h 查看到的文件系统才是可以挂载的分区，否则不能挂载
+mount 文件系统 【路径】/目录名  将指定目录挂载到指定文件系统下
+eg:mount /dev/sda1 /aa   :将目录aa挂载到/dev/sda1文件系统下
+umount 【路径】/目录 从指定文件系统下将挂载的目录卸载
+eg:umount /aa ：卸载根目录下的aa目录
+
+二十：定时关机
+shutdown 关机
+shutdown -t 秒 -h 分钟 ：让系统几分钟后关机并提前几秒给予提示
+shutdown -t 秒 -r 分钟：让系统几分钟后重启系统并提前几秒给予提示
+二十一：查看主机名
+hostname 显示主机名
+hostname 新主机名 临时改变主机名
+
+uname -a 显示系统信息（操作系统，发行版本，主机名。。。。）
+
+
+二十二：查看软件的安装包
+
+
+rpm -qa:显示所有的软件安装包
+rpm -qa |grep 软件名：查看指定软件安装的详细信息
+rpm -e 软件包名：删除软件包
+rpm -ivh 软件包名：安装软件包
+
+
+二十三：远程连接工具
+1.crt
+2.ssh（命令）
+3.winscp SecureFX
+4.xshell
+
+附：scp file1 ip:/dir 在本端当前目录下复制文件file1到ip地址主机的dir目录下 例如：scp a.txt 192.168.1.1:/tmp
+scp IP:/dir2/file2  /dir1  从IP地址为IP的远端/dir2目录下复制文件file2到本端的/dir目录下  例如：scp 172.17.128.0:/tmp/a.txt /tmp
+scp -r IP:/dir2  /dir1  复制IP地址为IP的远端/dir2目录及其子目录下的所有文件到本端的/dir目录下 例如：scp 172.17.128.0:/var/log /tmp
+
+ 
+二十四：获取命令的帮助信息
+man 命令
+命令 --help
+按字母q退出man命令
+
+
+新建多个文件或目录（附加内容）
+touch 文件名{初始值..终止值} 终止值必须大于初始值（整数即可）,中间必须是两个点
+eg:touch a{1..10}新建文件a1,a2...a10
+   mkdir -p A{1..10}/B{1..10}  分别新建A1,A2..A10即每个目录下有B1,B2,...B10个文件
+删除时，可用通配符方便操作，*代表0到多个字符，？仅能代表1个字符
+eg:rm -rf a*:删除以a开头的所有文件
+   rm -rf a?:删除以a开头且长度只能为2个字符长度的文件
+dd if=/dev/zero of=输出的路径/文件名 bs=1k count=10  将会创建一个10k大小的文件，内容都为0    （面试题）
+
+
+1.双引号（""）
+由双引号括起来的字符，一般保留特殊字符的功能，如美元符号（$）,反引号（``）,反斜线(\)
+2.单引号（''）
+有单引号括起来的字符都被视为普通字符对待。
+3.反引号（``）
+有反引号括起来的字符会被当作shell命令执行，其标准输出结果取代整个反引号部分
+
+
+
+附加+++++++++++++++++++++++++++++++++++
+
+Linux netstat命令用于显示网络状态。
+
+利用netstat指令可让您了解整个Linux系统的网络情况。
+
+语法
+netstat [-acCeFghilMnNoprstuvVwx] [-A <网络类型>] [-ip]
+参数说明：
+
+-a或--all显示所有连线中的套接字。
+-A <网络类型>或-<网络类型>列出该网络类型连线中的相关地址。
+-c或--continuous持续列出网络状态。
+-C或--cache显示路由器配置的快取信息。
+-e或--extend显示网络其他相关信息。
+-F或--fib显示FIB。
+-g或--groups显示多重广播功能分组组员列表。
+-h或--help在线帮助。
+-i或--i​​nterfaces显示网络界面信息表单。
+-l或--listening显示监视中的服务器的套接字。
+-M或-假面舞会显示伪装的网络连线。
+-n或--numeric直接使用IP地址，而不通过域名服务器。
+-N或--netlink或--symbolic显示网络硬件外围设备的符号连接名称。
+-o或--timers显示计时器。
+-p或--programs显示正在使用套接字的程序识别码和程序名。
+-r或--route显示路由表。
+-s或--statistics显示网络工作信息统计表。
+-t或--tcp显示TCP传输协议的连线状况。
+-u或--udp显示UDP传输协议的连线状况。
+-v或--verbose显示指令执行过程。
+-V或--version显示版本信息。
+-w或--raw显示RAW传输协议的连线状况。
+-x或--unix此参数的效果和指定“ -A unix”参数相同。
+--ip或--inet此参数的效果和指定“ -A inet”参数相同。
+实例
+显示详细的网络状况
+
+＃netstat -a
+显示当前户籍UDP连接状况
+
+＃netstat -nu
+显示UDP端口号的使用情况
+
+＃netstat -apu
+活动的Internet连接（服务器和已建立）
+Proto Recv-Q Send-Q本地地址外部地址状态PID /程序名称  原的Recv - Q发送- Q本地地址外国地址状态    的PID /节目名称                    
+udp 0 0 *：32768 *：*-          0 0 *：32768 *：* -                                            
+udp 0 0 *：nfs *：*-          0 0 *：nfs             *：* -                                 
+udp 0 0 *：641 *：* 3006 / rpc.statd   0 0 *：641 *：* 3006 / rpc 。陈述                                      
+udp 0 0 192.168.0.3:netbios-ns *：* 3537 / nmbd      0 0 192.168 。0.3 ：netbios - ns    *：* 3537 / nmbd                             
+udp 0 0 *：netbios-ns *：* 3537 / nmbd      0 0 *：netbios - ns         *：* 3537 / nmbd                             
+udp 0 0 192.168.0.3:netbios-dgm *：* 3537 / nmbd      0 0 192.168 。0.3 ：netbios - dgm    *：* 3537 / nmbd                             
+udp 0 0 *：netbios-dgm *：* 3537 / nmbd      0 0 *：netbios - dgm         *：* 3537 / nmbd                             
+udp 0 0 *：tftp *：* 3346 / xinetd     0 0 *：tftp            *：* 3346 / xinetd                            
+udp 0 0 *：999 *：* 3366 / rpc.rquotad  0 0 *：999 *：* 3366 / rpc 。Rquotad                                     
+udp 0 0 *：sunrpc *：* 2986 /端口映射    0 0 *：sunrpc           *：* 2986 /端口映射                           
+udp 0 0 *：ipp *：* 6938 / cupsd     0 0 *：ipp             *：* 6938 / cupsd                            
+udp 0 0 *：1022 *：* 3392 / rpc.mountd   0 0 *：1022 *：* 3392 / rpc 。挂载                                     
+udp 0 0 *：638 *：* 3006 / rpc.statd0 0 *：638 *：* 3006 / rpc 。陈述                                   
+显示网卡列表
+
+＃netstat -i
+内核接口表内核接口表 
+Iface MTU满足RX-OK RX-ERR RX-DRP RX-OVR TX-OK TX-ERR TX-DRP TX-OVR FlgIface     MTU满足  RX - OK RX - ERR RX - DRP RX - OVR TX - OK TX - ERR TX - DRP TX - OVR Flg
+eth0 1500 0 181864 0 0 0 141278 0 0 0 BMRU1500 0 181864 0 0 0 141278 0 0 0 BMRU                        
+lo 16436 0 3362 0 0 0 3362 0 0 0 LRU16436 0 3362 0 0 0 3362 0 0 0 LRU                          
+显示较高组的关系
+
+＃netstat -g
+IPv6 / IPv4组成员资格IPv6 / IPv4组成员资格  
+接口引用组接口引用组     
+--------------- ------ ------------------------------------ ------ ---------------------  
+lo 1 ALL-SYSTEMS.MCAST.NET1    ALL -系统。MCAST 。净
+eth0 1 ALL-SYSTEMS.MCAST.NET1    ALL -系统。MCAST 。净
+lo 1 ff02 :: 11    ff02 :: 1
+eth0 1 ff02 :: 1：ff0a：b0c1    ff02 :: 1 ：ff0a ：b0c
+eth0 1 ff02 :: 11    ff02 :: 1
+显示网络统计信息
+
+＃netstat -s
+叶：叶：
+  总共收到184695个数据包总共收到184695个数据包
+  0转发0转发
+  0个入站数据包被丢弃0个入站数据包被丢弃
+  184687传入的数据包已传递184687传入的数据包已传递
+  143917个请求已发出143917个请求发送出去
+  丢弃了32个传出数据包丢弃了32个传出数据包
+  30条路线丢失，掉线了30条路线丢失，掉线了
+ICMP：ICMP ：
+  收到676个ICMP消息收到676个ICMP消息
+  5输入ICMP消息失败。5输入ICMP消息失败。
+  ICMP输入直方图：：
+    目的地无法到达：44：44 
+    回声请求：287：287 
+    回声回复：345：345 
+  发送了304个ICMP消息发送了304个ICMP消息
+  0 ICMP消息失败0 ICMP消息失败
+  ICMP输出直方图：：
+    目的地无法到达：17：17 
+    回声回复：287：287 
+Tcp：Tcp ：
+  473个活动连接口473个活动连接口
+  28个无源连接孔28个无源连接孔
+  4次失败的连接尝试4次失败的连接尝试
+  收到11个连接重置收到11个连接重置
+  建立了1个连接建立了1个连接
+  收到178253个细分收到178253个细分
+  137936个段发送137936段发送出去
+  重发了29个片段重发了29个片段
+  收到0个坏段。收到0个不良段。
+  已发送336个重置已发送336个重置
+Udp：Udp ：
+  收到5714个数据包收到5714个数据包
+  接收到未知端口的8个数据包。接收到未知端口的8个数据包。
+  0个数据包接收错误0个数据包接收错误
+  已发送5419个数据包已发送5419个数据包
+TcpExt：TcpExt ：
+  收到SYN_RECV初始套接字的1个复位1个接收到的重置为胚胎SYN_RECV插座
+  ArpFilter：0ArpFilter ：0 
+  12个TCP套接字完成时间在快速计时器中等待12个TCP套接字完成时间在快速计时器中等待
+  延迟发送了572个延迟发送了572个
+  3个延迟的插孔由于插槽锁定而进一步延迟3个延迟的插孔由于插槽锁定而进一步延迟
+  13766个数据包直接排队到recvmsg前置队列。13766个数据包直接排队到recvmsg前置队列。
+  1101482直接从积压接收的数据包1101482直接从积压接收的数据包
+  从前队列直接接收到19599861数据包从前队列直接接收到19599861数据包
+  预计有46860个数据包头预计有46860个数据包头
+  预测到了14541个数据包头并将其直接排队给用户预测了14541个数据包头并将其直接排队给用户
+  TCPPureAcks：12259TCPPureAcks ：12259 
+  TCPHP攻击次数：9119TCPHP攻击次数：9119 
+  TCPRenoRecovery：0TCPRenoRecovery ：0 
+  TCPSackRecovery：0TCPSackRecovery ：0 
+  TCPSACKReneging：0TCPSACKReneging ：0 
+  TCPFACK重新排序：0TCPFACKReorder ：0 
+  TCPSACK重新排序：0TCPSACK重新排序：0 
+  TCPRenoReorder：0TCPRenoReorder ：0 
+  TCPTS重新排序：0TCPTSReorder ：0 
+  TCPFullUndo：0TCPFullUndo ：0 
+  TCPPartialUndo：0TCPPartialUndo ：0 
+  TCPDSACK撤消：0TCPDSACKUndo ：0 
+  TCPLossUndo：0TCPLossUndo ：0 
+  TCP损耗：0TCP损耗：0 
+  TCPLostRetransmit：0TCPLostRetransmit ：0 
+  TCPRenoFailures：0TCPRenoFailures ：0 
+  TCPSackFailures：0TCPSackFailures ：0 
+  TCPLossFailures：0TCPLossFailures ：0 
+  TCPFastRetrans：0TCPFastRetrans ：0 
+  TCPForwardRetrans：0TCPForwardRetrans ：0 
+  TCPSlowStartRetrans：0TCPSlowStartRetrans ：0 
+  TCP超时：29TCP超时：29 
+  TCPRenoRecoveryFail：0TCPRenoRecoveryFail ：0 
+  TCPSackRecoveryFail：0TCPSackRecoveryFail ：0 
+  TCPScheduler失败：0TCPSchedulerFailed ：0 
+  TCPRcvCollapsed：0TCPRcvCollapsed ：0 
+  TCPDSACKOld已发送：0TCPDSACKOldSent ：0 
+  TCPDSACKOfoSent：0TCPDSACKOfoSent ：0 
+  TCPDSACKRecv：0TCPDSACKRecv ：0 
+  TCPDSACKOfoRecv：0TCPDSACKOfoRecv ：0 
+  TCPAbortOnSyn：0TCPAbortOnSyn ：0 
+  TCPAbortOnData：1TCPAbortOnData ：1 
+  TCPAbortOnClose：0TCPAbortOnClose ：0 
+  TCPAbortOnMemory：0TCPAbortOnMemory ：0 
+  TCPAbortOnTimeout：3TCPAbortOnTimeout ：3 
+  TCPAbortOnLinger：0TCPAbortOnLinger ：0 
+  TCPAbort失败：3TCPAbortFailed ：3 
+  TCPMemoryPressures：0TCPMemoryPressures ：0 
+显示监听的套接口
+
+＃netstat -l
+活动的Internet连接（仅服务器）活动的Internet连接（仅服务器） 
+Pr
